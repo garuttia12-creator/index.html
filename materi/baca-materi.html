@@ -109,14 +109,17 @@
         } else {
             document.body.style.display = "block";
             
-            // Logika Header Guru
+            // Logika Header Guru & Admin (Otoritas Sama)
             try {
                 const bioSnap = await get(ref(db, `users/${user.uid}/biodata`));
-                if (bioSnap.exists() && (bioSnap.val().role || "").toLowerCase() === "admin") {
-                    adminLinkContainer.innerHTML = `
-                        <a href="../admin/admin-cms.html" class="btn-admin">
-                            <i class="fa-solid fa-user-tie"></i> Guru
-                        </a>`;
+                if (bioSnap.exists()) {
+                    const role = (bioSnap.val().role || "").toLowerCase();
+                    if (role === "admin" || role === "guru") {
+                        adminLinkContainer.innerHTML = `
+                            <a href="../admin/admin-cms.html" class="btn-admin">
+                                <i class="fa-solid fa-user-tie"></i> Guru
+                            </a>`;
+                    }
                 }
             } catch (err) { console.error(err); }
 
