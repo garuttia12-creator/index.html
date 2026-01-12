@@ -237,7 +237,7 @@
                 document.getElementById("sapaan").innerText = `Selamat Datang, ${data.nama || 'User'}!`;
 
                 if (role === "admin") {
-                    adminLinkContainer.innerHTML = `<a href="admin/admin-cms.html" class="btn-admin"><i class="fa-solid fa-user-shield"></i> Admin</a>`;
+                    adminLinkContainer.innerHTML = `<a href="admin/admin-cms.html" class="btn-admin"><i class="fa-solid fa-user-shield"></i> Guru</a>`;
                 }
 
                 let htmlProfile = `<p><strong>Nama</strong><span>: ${data.nama || '-'}</span></p><p><strong>Email</strong><span>: ${data.email || '-'}</span></p>`;
@@ -288,3 +288,4 @@
 </script>
 </body>
 </html>
+
