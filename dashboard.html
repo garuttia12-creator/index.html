@@ -236,7 +236,8 @@
                 const role = (data.role || "siswa").toLowerCase().trim();
                 document.getElementById("sapaan").innerText = `Selamat Datang, ${data.nama || 'User'}!`;
 
-                if (role === "admin") {
+                // PERUBAHAN DISINI: Otoritas admin dan guru disamakan
+                if (role === "admin" || role === "guru") {
                     adminLinkContainer.innerHTML = `<a href="admin/admin-cms.html" class="btn-admin"><i class="fa-solid fa-user-shield"></i> Guru</a>`;
                 }
 
@@ -276,16 +277,4 @@
                 if(i===0 && j<first || d>days){cell.innerHTML="";}
                 else{
                     cell.innerText=d;
-                    if(d===now.getDate() && m===now.getMonth() && y===now.getFullYear()) cell.classList.add("today");
-                    d++;
-                }
-                row.appendChild(cell);
-            }
-            body.appendChild(row);
-        }
-    }
-    bulanSelect.onchange=renderCalendar; tahunSelect.onchange=renderCalendar; renderCalendar();
-</script>
-</body>
-</html>
-
+                    if(d===now.getDate
