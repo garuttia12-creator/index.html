@@ -75,7 +75,7 @@
         }
         .ttd { width: 250px; font-size: 14px; }
         .ttd img { height: 60px; margin: 5px 0; }
-        .nama-ttd { font-weight: 700; border-bottom: 1.5px solid #333; display: inline-block; padding: 0 10px; }
+        .ttd .nama-ttd { font-weight: 700; border-bottom: 1.5px solid #333; display: inline-block; padding: 0 10px; }
         .nip { font-size: 12px; margin-top: 2px; }
 
         /* Actions */
@@ -155,12 +155,10 @@
 <script type="module">
     import { db } from "../js/firebase-config.js";
     import { ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-    // Tambahkan import Auth untuk pengecekan real-time
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const auth = getAuth();
 
-    // Fungsi utama untuk memuat data
     async function muatDataSertifikat(user) {
         const uid = user.uid;
 
@@ -173,10 +171,12 @@
             }
 
             const userData = userSnap.val();
-            const isAdmin = userData.biodata?.role === "admin";
+            const role = (userData.biodata?.role || "").toLowerCase();
+            // Otoritas Sama: Guru dan Admin dianggap sebagai staff/admin panel
+            const isStaff = role === "admin" || role === "guru";
             
             // LOGIKA AKSES
-            if (!isAdmin) {
+            if (!isStaff) {
                 // Jika Siswa, cek kelulusan
                 const isLulus = userData.lulus_final || localStorage.getItem(`status_lulus_final_${uid}`);
                 if (isLulus !== "true" && isLulus !== true) {
@@ -188,10 +188,10 @@
 
             // ISI DATA KE HTML
             const namaFinal = userData.biodata?.nama || userData.nama || "Pengguna";
-            document.getElementById("namaSiswa").innerText = isAdmin ? `${namaFinal} (Preview Admin)` : namaFinal;
+            document.getElementById("namaSiswa").innerText = isStaff ? `${namaFinal} (Preview ${role.charAt(0).toUpperCase() + role.slice(1)})` : namaFinal;
             
             let nilai = localStorage.getItem(`nilai_sertifikat_${uid}`);
-            if (isAdmin && (!nilai || nilai === "0")) nilai = "100"; 
+            if (isStaff && (!nilai || nilai === "0")) nilai = "100"; 
             document.getElementById("nilaiAkhir").innerText = nilai || "0";
 
             // NOMOR SERTIFIKAT & TANGGAL
@@ -208,16 +208,12 @@
         }
     }
 
-    // OBSERVER: Ini akan otomatis mendeteksi login tanpa bergantung pada LocalStorage saja
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // Jika user terdeteksi login di Firebase
             muatDataSertifikat(user);
         } else {
-            // Jika benar-benar tidak ada session login
             const backupId = localStorage.getItem("userLogin");
             if (backupId) {
-                // Coba gunakan ID dari localStorage jika Auth observer telat
                 muatDataSertifikat({ uid: backupId });
             } else {
                 alert("Sesi berakhir. Silahkan login kembali.");
