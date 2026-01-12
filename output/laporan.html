@@ -61,8 +61,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 50px;">ID</th>
-                        <th style="text-align: left;">Judul Materi</th>
+                        <th style="width: 50px;">NO</th>
+                        <th style="text-align: left;">INDIKATOR</th>
                         <th>Skor Anda</th>
                     </tr>
                 </thead>
@@ -129,7 +129,7 @@
                 // Header Blok
                 const hRow = document.createElement('tr');
                 hRow.className = 'blok-header';
-                hRow.innerHTML = `<td colspan="3"><i class="fa-solid fa-layer-group"></i> UNIT BLOK ${nomorBlok}</td>`;
+                hRow.innerHTML = `<td colspan="3"><i class="fa-solid fa-layer-group"></i> MERANCANG TOPOLOGI JARINGAN ${nomorBlok}</td>`;
                 tbody.appendChild(hRow);
 
                 let skorBlok = 0;
@@ -161,11 +161,11 @@
                 fRow.className = 'sub-total';
                 if (materiTuntas === group.length && group.length > 0) {
                     const rataRata = Math.round(skorBlok / group.length);
-                    fRow.innerHTML = `<td colspan="2">RATA-RATA UNIT ${nomorBlok}</td><td>${rataRata}</td>`;
+                    fRow.innerHTML = `<td colspan="2">RATA-RATA MATERI ${nomorBlok}</td><td>${rataRata}</td>`;
                     totalSkorKumulatif += rataRata;
                     blokSelesaiCount++;
                 } else {
-                    fRow.innerHTML = `<td colspan="2">RATA-RATA UNIT ${nomorBlok}</td><td style="font-size:11px; color:#f8c471">Belum Lengkap (${materiTuntas}/${group.length})</td>`;
+                    fRow.innerHTML = `<td colspan="2">RATA-RATA MATERI ${nomorBlok}</td><td style="font-size:11px; color:#f8c471">Belum Lengkap (${materiTuntas}/${group.length})</td>`;
                 }
                 tbody.appendChild(fRow);
             }
@@ -178,11 +178,11 @@
             const btnSertif = document.getElementById('btnSertifikat');
 
             if (blokSelesaiCount >= 1 && nilaiFinal >= 70) {
-                statusTeks.innerHTML = "✅ Kompeten - Selamat Anda Lulus!";
+                statusTeks.innerHTML = "✅ Selamat Anda Lulus!";
                 statusTeks.style.color = "#2ecc71";
                 btnSertif.style.display = "inline-block";
             } else {
-                statusTeks.innerHTML = "❌ Belum Memenuhi Syarat Kelulusan (Minimal 1 Blok Tuntas & Rata-rata 70)";
+                statusTeks.innerHTML = "❌ Belum Memenuhi Syarat Kelulusan (Minimal Skor 70)";
                 statusTeks.style.color = "#f8c471";
                 btnSertif.style.display = "none";
             }
@@ -197,3 +197,4 @@
 </body>
 
 </html>
+
