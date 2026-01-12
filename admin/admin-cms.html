@@ -6,14 +6,38 @@
     <title>Admin CMS | Panel Konten Modern</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     <style>
+        /* ============ RESET & BASE ============ */
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-        body{background:linear-gradient(180deg,#1e2f8f,#0b1c4d); color:#fff; padding:20px; min-height:100vh; display: none;} 
+        body{background:linear-gradient(180deg,#1e2f8f,#0b1c4d); color:#fff; min-height:100vh; display: none; overflow-x: hidden;} 
         
-        .cms-container{max-width:1000px; margin:40px auto; background:rgba(255,255,255,0.1); backdrop-filter:blur(15px); padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.2); box-shadow:0 15px 35px rgba(0,0,0,0.3);}
+        /* Navbar Dinamis (Sesuai Dashboard) */
+        .navbar{ position:fixed; width:100%; top:0; background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); z-index:1000; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.2); }
+        .nav-container{ max-width:1200px; margin:auto; display:flex; justify-content:space-between; align-items:center; padding:0 20px; }
+        .brand{ display:flex; align-items:center; gap:10px; }
+        .logo{ width: clamp(35px, 10vw, 45px); }
+        .brand-text h1{ font-size: clamp(14px, 4vw, 18px); margin:0; }
+        .brand-text span{ font-size: clamp(10px, 3vw, 12px); opacity:0.8; }
+        
+        nav ul{ display:flex; list-style:none; gap:15px; align-items: center; }
+        nav a{ color:#fff; text-decoration:none; font-size: clamp(12px, 3vw, 14px); font-weight:500; transition: 0.3s; }
+        nav a:hover{ opacity: 0.8; }
+        
+        .btn-admin-nav {
+            background: #f8c471;
+            color: #0b1c4d !important;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 700 !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ============ CMS CONTENT ============ */
+        .cms-container{max-width:1000px; margin:110px auto 40px; background:rgba(255,255,255,0.1); backdrop-filter:blur(15px); padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.2); box-shadow:0 15px 35px rgba(0,0,0,0.3);}
         .gradient-text{background: linear-gradient(90deg,#e93538,#ff6f61,#f8c471); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:700; font-size: 24px; margin-bottom: 25px; display: inline-block;}
         
         .section-title{color: #f8c471; font-size: 18px; margin: 30px 0 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
@@ -21,34 +45,14 @@
         label{display:block; margin-bottom:5px; font-size:13px; opacity: 0.8;}
         
         input, select{width:100%; padding:12px; background: rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:10px; color: #fff; outline: none;}
-        
         select option { background: #1e2f8f; color: #fff; }
         
         #editor-container { background: white; color: black; border-radius: 10px; height: 350px; margin-bottom: 20px; font-size: 16px; }
         .ql-toolbar { background: #f3f3f3; border-radius: 10px 10px 0 0; border: none !important; }
         .ql-container { border: none !important; border-radius: 0 0 10px 10px; }
 
-        .ql-snow .ql-tooltip {
-            background-color: #ffffff !important;
-            color: #333 !important;
-            border: 1px solid #ccc !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
-            border-radius: 8px !important;
-            z-index: 9999;
-        }
-        .ql-snow .ql-tooltip input[type=text] {
-            color: #000 !important;
-            background: #fff !important;
-            border: 1px solid #ccc !important;
-        }
-        .ql-snow .ql-tooltip a.ql-action::after {
-            color: #4361ee !important;
-            font-weight: bold;
-        }
-
         .kuis-box{background: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #ff6f61;}
         .grid-options{display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;}
-        .grid-options input { background: rgba(255,255,255,0.05); }
 
         button#btnSimpan{background: linear-gradient(90deg,#4cc9f0,#4361ee); color:#fff; border:none; padding:18px; border-radius:35px; cursor:pointer; font-weight:600; width:100%; margin-top: 20px; font-size: 16px; transition: 0.3s;}
         button#btnSimpan:hover{transform: scale(1.02); box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);}
@@ -56,15 +60,36 @@
         .materi-card{background:rgba(255,255,255,0.08); padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;}
         .badge-urut { background: #f8c471; color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; margin-right: 10px;}
         .action-btns button { margin-left: 5px; padding: 8px 12px; border-radius: 8px; cursor: pointer; border: none; color: white; }
+
+        @media (max-width: 600px) {
+            .cms-container { margin-top: 90px; padding: 20px; }
+            .grid-options { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<div class="cms-container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 class="gradient-text"><i class="fa-solid fa-user-shield"></i> Panel Admin</h2>
-        <button id="btnBackToDashboard" type="button" style="background:rgba(255,0,0,0.6); color:white; border:none; padding:8px 20px; border-radius:20px; cursor:pointer;">Dashboard</button>
+<header class="navbar">
+    <div class="nav-container">
+        <div class="brand">
+            <img src="../img/logo-smkn9.png" class="logo">
+            <div class="brand-text">
+                <h1>SMKN 9 Garut</h1>
+                <span>Media Pembelajaran TJKT</span>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../dashboard.html">Dashboard</a></li>
+                <li><a href="#" class="btn-admin-nav"><i class="fa-solid fa-user-shield"></i> Admin</a></li>
+                <li><a href="#" id="btnLogout">Logout</a></li>
+            </ul>
+        </nav>
     </div>
+</header>
+
+<div class="cms-container">
+    <h2 class="gradient-text"><i class="fa-solid fa-user-shield"></i> Panel Master Materi</h2>
     
     <form id="masterForm">
         <div class="section-title">1. Metadata & Judul</div>
@@ -96,17 +121,33 @@
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script type="module">
     import { db, auth } from "../js/firebase-config.js";
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { ref, set, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // PERBAIKAN UTAMA: Navigasi menggunakan Full URL agar tidak terjebak di folder admin
-    const redirectToDashboard = () => {
-        const homeUrl = window.location.origin + window.location.pathname.split('/admin/')[0] + "/dashboard.html";
-        window.location.assign(homeUrl);
-    };
+    // 1. Auth Guard (Khusus Admin)
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const bioSnap = await get(ref(db, `users/${user.uid}/biodata`));
+            if (bioSnap.exists() && bioSnap.val().role === "admin") {
+                document.body.style.display = "block";
+                hitungMateri();
+            } else { 
+                window.location.href = "../dashboard.html";
+            }
+        } else { 
+            window.location.href = "../login.html";
+        }
+    });
 
-    document.getElementById('btnBackToDashboard').addEventListener('click', redirectToDashboard);
+    // 2. Logout Logic
+    document.getElementById('btnLogout').addEventListener('click', (e) => {
+        e.preventDefault();
+        if(confirm("Keluar dari panel admin?")) {
+            signOut(auth).then(() => { window.location.href = "../login.html"; });
+        }
+    });
 
+    // 3. Initialize Quill Editor
     var quill = new Quill('#editor-container', {
         modules: {
             toolbar: [
@@ -125,7 +166,7 @@
     let materiCount = 0;
     let currentEditingID = null;
 
-    // Render Input Kuis
+    // 4. Render Input Kuis (5 Soal)
     const soalContainer = document.getElementById('soal-container');
     for(let i=1; i<=5; i++){
         soalContainer.innerHTML += `
@@ -143,25 +184,10 @@
                     <option value="a">A</option><option value="b">B</option>
                     <option value="c">C</option><option value="d">D</option>
                 </select>
-            </div>
-        `;
+            </div>`;
     }
 
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            const bioSnap = await get(ref(db, `users/${user.uid}/biodata`));
-            if (bioSnap.exists() && bioSnap.val().role === "admin") {
-                document.body.style.display = "block";
-                hitungMateri();
-            } else { 
-                redirectToDashboard(); 
-            }
-        } else { 
-            const loginUrl = window.location.origin + window.location.pathname.split('/admin/')[0] + "/login.html";
-            window.location.assign(loginUrl);
-        }
-    });
-
+    // 5. Database Logic
     async function hitungMateri() {
         onValue(ref(db, 'materi'), (snap) => {
             materiCount = snap.exists() ? Object.keys(snap.val()).length : 0;
@@ -175,7 +201,6 @@
     const form = document.getElementById('masterForm');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const materiID = currentEditingID || ("materi" + (materiCount + 1));
         const judul = document.getElementById('judul').value;
         const kontenHtml = quill.root.innerHTML;
@@ -202,8 +227,7 @@
 
         try {
             const dataMateri = {
-                judul,
-                konten: kontenHtml,
+                judul, konten: kontenHtml,
                 media: document.getElementById('media_link').value,
                 hasKuis: (bankSoal !== null),
                 bank_soal: bankSoal,
@@ -229,13 +253,9 @@
         quill.setContents([]);
         document.querySelectorAll('.tanya, .optA, .optB, .optC, .optD').forEach(el => el.value = "");
         document.querySelectorAll('.kunci').forEach(el => el.selectedIndex = 0);
-        
         document.getElementById('btnSimpan').innerHTML = `Publikasikan Sebagai <span id="label-urut">materi${materiCount+1}</span> <i class="fa-solid fa-paper-plane"></i>`;
         document.getElementById('btnBatalEdit').style.display = "none";
-        hitungMateri();
     }
-
-    document.getElementById('btnBatalEdit').onclick = resetForm;
 
     onValue(ref(db, 'materi'), (snap) => {
         const listDiv = document.getElementById('list-materi');
@@ -262,40 +282,29 @@
         if(snap.exists()){
             const data = snap.val();
             currentEditingID = id;
-            
             document.getElementById('judul').value = data.judul;
             quill.root.innerHTML = data.konten;
             document.getElementById('media_link').value = data.media || "";
-            
             for(let i=1; i<=5; i++){
-                document.querySelector(`.tanya[data-id="${i}"]`).value = "";
-                document.querySelector(`.optA[data-id="${i}"]`).value = "";
-                document.querySelector(`.optB[data-id="${i}"]`).value = "";
-                document.querySelector(`.optC[data-id="${i}"]`).value = "";
-                document.querySelector(`.optD[data-id="${i}"]`).value = "";
-                document.querySelector(`.kunci[data-id="${i}"]`).value = "a";
-
                 const kuisKey = `kuis_${id}_${i}`;
                 if(data.bank_soal && data.bank_soal[kuisKey]){
                     const s = data.bank_soal[kuisKey];
-                    document.querySelector(`.tanya[data-id="${i}"]`).value = s.tanya || "";
-                    document.querySelector(`.optA[data-id="${i}"]`).value = s.a || "";
-                    document.querySelector(`.optB[data-id="${i}"]`).value = s.b || "";
-                    document.querySelector(`.optC[data-id="${i}"]`).value = s.c || "";
-                    document.querySelector(`.optD[data-id="${i}"]`).value = s.d || "";
-                    document.querySelector(`.kunci[data-id="${i}"]`).value = s.kunci || "a";
+                    document.querySelector(`.tanya[data-id="${i}"]`).value = s.tanya;
+                    document.querySelector(`.optA[data-id="${i}"]`).value = s.a;
+                    document.querySelector(`.optB[data-id="${i}"]`).value = s.b;
+                    document.querySelector(`.optC[data-id="${i}"]`).value = s.c;
+                    document.querySelector(`.optD[data-id="${i}"]`).value = s.d;
+                    document.querySelector(`.kunci[data-id="${i}"]`).value = s.kunci;
                 }
             }
-            
             document.getElementById('btnSimpan').innerHTML = `Update ${id} <i class="fa-solid fa-save"></i>`;
             document.getElementById('btnBatalEdit').style.display = "block";
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
-    window.hapusM = (id) => { 
-        if(confirm("Hapus materi ini?")) remove(ref(db, `materi/${id}`)); 
-    };
+    window.hapusM = (id) => { if(confirm("Hapus materi ini?")) remove(ref(db, `materi/${id}`)); };
+    document.getElementById('btnBatalEdit').onclick = resetForm;
 </script>
 </body>
 </html>
