@@ -63,7 +63,7 @@
 <div class="cms-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 class="gradient-text"><i class="fa-solid fa-user-shield"></i> Panel Admin</h2>
-        <button id="btnBackToDashboard" style="background:rgba(255,0,0,0.6); color:white; border:none; padding:8px 20px; border-radius:20px; cursor:pointer;">Dashboard</button>
+        <button id="btnBackToDashboard" type="button" style="background:rgba(255,0,0,0.6); color:white; border:none; padding:8px 20px; border-radius:20px; cursor:pointer;">Dashboard</button>
     </div>
     
     <form id="masterForm">
@@ -99,10 +99,13 @@
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { ref, set, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // FIX: Handle Tombol Dashboard keluar folder admin
-    document.getElementById('btnBackToDashboard').onclick = () => {
-        window.location.href = "../dashboard.html";
+    // PERBAIKAN UTAMA: Navigasi menggunakan Full URL agar tidak terjebak di folder admin
+    const redirectToDashboard = () => {
+        const homeUrl = window.location.origin + window.location.pathname.split('/admin/')[0] + "/dashboard.html";
+        window.location.assign(homeUrl);
     };
+
+    document.getElementById('btnBackToDashboard').addEventListener('click', redirectToDashboard);
 
     var quill = new Quill('#editor-container', {
         modules: {
@@ -151,12 +154,11 @@
                 document.body.style.display = "block";
                 hitungMateri();
             } else { 
-                // FIX: Path keluar folder admin
-                window.location.href = "../dashboard.html"; 
+                redirectToDashboard(); 
             }
         } else { 
-            // FIX: Path keluar folder admin
-            window.location.href = "../login.html"; 
+            const loginUrl = window.location.origin + window.location.pathname.split('/admin/')[0] + "/login.html";
+            window.location.assign(loginUrl);
         }
     });
 
@@ -164,7 +166,8 @@
         onValue(ref(db, 'materi'), (snap) => {
             materiCount = snap.exists() ? Object.keys(snap.val()).length : 0;
             if(!currentEditingID) {
-                document.getElementById('label-urut').innerText = "materi" + (materiCount + 1);
+                const label = document.getElementById('label-urut');
+                if(label) label.innerText = "materi" + (materiCount + 1);
             }
         });
     }
@@ -236,6 +239,7 @@
 
     onValue(ref(db, 'materi'), (snap) => {
         const listDiv = document.getElementById('list-materi');
+        if(!listDiv) return;
         listDiv.innerHTML = "";
         snap.forEach(c => {
             const data = c.val();
