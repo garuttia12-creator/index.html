@@ -13,7 +13,7 @@
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
         body{background:linear-gradient(180deg,#1e2f8f,#0b1c4d); color:#fff; min-height:100vh; display: none; overflow-x: hidden;} 
         
-        /* Navbar Dinamis (Sesuai Dashboard) */
+        /* Navbar Dinamis */
         .navbar{ position:fixed; width:100%; top:0; background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); z-index:1000; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.2); }
         .nav-container{ max-width:1200px; margin:auto; display:flex; justify-content:space-between; align-items:center; padding:0 20px; }
         .brand{ display:flex; align-items:center; gap:10px; }
@@ -25,27 +25,12 @@
         nav a{ color:#fff; text-decoration:none; font-size: clamp(12px, 3vw, 14px); font-weight:500; transition: 0.3s; }
         nav a:hover{ opacity: 0.8; }
         
-        .btn-admin-nav {
-            background: #f8c471;
-            color: #0b1c4d !important;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-weight: 700 !important;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .btn-admin-nav { background: #f8c471; color: #0b1c4d !important; padding: 6px 15px; border-radius: 20px; font-weight: 700 !important; display: flex; align-items: center; gap: 6px; }
 
         /* ============ CMS CONTENT ============ */
         .cms-container{max-width:1000px; margin:110px auto 40px; background:rgba(255,255,255,0.1); backdrop-filter:blur(15px); padding:30px; border-radius:24px; border:1px solid rgba(255,255,255,0.2); box-shadow:0 15px 35px rgba(0,0,0,0.3);}
+        .gradient-text{background: linear-gradient(90deg,#e93538,#ff6f61,#f8c471); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:700; font-size: 24px; margin-bottom: 25px; display: inline-block;}
         
-        /* Layout Header Panel */
-        .panel-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .gradient-text{background: linear-gradient(90deg,#e93538,#ff6f61,#f8c471); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:700; font-size: 24px; display: inline-block;}
-        
-        /* Kotak Kuning Indikator (Baru) */
-        .box-materi-urut { background: #f8c471; color: #0b1c4d; padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-
         .section-title{color: #f8c471; font-size: 18px; margin: 30px 0 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px;}
         .form-group{margin-bottom:15px;}
         label{display:block; margin-bottom:5px; font-size:13px; opacity: 0.8;}
@@ -61,19 +46,21 @@
         .grid-options{display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;}
 
         button#btnSimpan{background: linear-gradient(90deg,#4cc9f0,#4361ee); color:#fff; border:none; padding:18px; border-radius:35px; cursor:pointer; font-weight:600; width:100%; margin-top: 20px; font-size: 16px; transition: 0.3s;}
-        button#btnSimpan:hover{transform: scale(1.02); box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);}
         
-        /* CSS Untuk Sembunyikan Kata (Tapi tetap ada di DOM) */
-        .hidden-text { display: none; }
+        /* ============ HIDDEN LOGIC (Penting) ============ */
+        /* Menyembunyikan elemen visual namun tetap ada di sistem */
+        .box-materi-urut, 
+        .badge-urut, 
+        .hidden-label { 
+            display: none !important; 
+        }
 
         .materi-card{background:rgba(255,255,255,0.08); padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;}
-        .badge-urut { background: #f8c471; color: #000; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; margin-right: 10px;}
         .action-btns button { margin-left: 5px; padding: 8px 12px; border-radius: 8px; cursor: pointer; border: none; color: white; }
 
         @media (max-width: 600px) {
             .cms-container { margin-top: 90px; padding: 20px; }
             .grid-options { grid-template-columns: 1fr; }
-            .panel-header-flex { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
     </style>
 </head>
@@ -99,10 +86,8 @@
 </header>
 
 <div class="cms-container">
-    <div class="panel-header-flex">
-        <h2 class="gradient-text"><i class="fa-solid fa-user-shield"></i> Panel Master Materi</h2>
-        <div class="box-materi-urut" id="display-materi-urut">materi...</div>
-    </div>
+    <h2 class="gradient-text"><i class="fa-solid fa-user-shield"></i> Panel Master Materi</h2>
+    <div id="display-materi-urut" class="box-materi-urut"></div>
     
     <form id="masterForm">
         <div class="section-title">1. Metadata & Judul</div>
@@ -124,8 +109,7 @@
         <div id="soal-container"></div>
 
         <button type="submit" id="btnSimpan">
-            Publikasikan 
-            <span class="hidden-text">Sebagai <span id="label-urut">Materi...</span></span> 
+            Publikasikan <span id="label-urut" class="hidden-label">materi...</span> 
             <i class="fa-solid fa-paper-plane"></i>
         </button>
         <button type="button" id="btnBatalEdit" style="display:none; background:gray; color:white; border:none; padding:10px; border-radius:35px; width:100%; margin-top:10px; cursor:pointer;">Batal Edit</button>
@@ -141,7 +125,7 @@
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { ref, set, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // 1. Auth Guard
+    // Auth Guard
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const bioSnap = await get(ref(db, `users/${user.uid}/biodata`));
@@ -150,18 +134,12 @@
                 if (userRole === "admin" || userRole === "guru") {
                     document.body.style.display = "block";
                     hitungMateri();
-                } else { 
-                    window.location.href = "../dashboard.html";
-                }
-            } else {
-                window.location.href = "../dashboard.html";
-            }
-        } else { 
-            window.location.href = "../login.html";
-        }
+                } else { window.location.href = "../dashboard.html"; }
+            } else { window.location.href = "../dashboard.html"; }
+        } else { window.location.href = "../login.html"; }
     });
 
-    // 2. Logout Logic
+    // Logout Logic
     document.getElementById('btnLogout').addEventListener('click', (e) => {
         e.preventDefault();
         if(confirm("Keluar dari panel admin?")) {
@@ -169,17 +147,10 @@
         }
     });
 
-    // 3. Initialize Quill Editor
+    // Initialize Quill
     var quill = new Quill('#editor-container', {
         modules: {
-            toolbar: [
-                [{ header: [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'align': [] }],
-                ['link', 'image', 'video'],
-                ['clean']
-            ]
+            toolbar: [[{ header: [1, 2, 3, false] }],['bold', 'italic', 'underline', 'strike'],[{ 'list': 'ordered'}, { 'list': 'bullet' }],[{ 'align': [] }],['link', 'image', 'video'],['clean']]
         },
         placeholder: 'Ketik materi di sini...',
         theme: 'snow'
@@ -188,7 +159,7 @@
     let materiCount = 0;
     let currentEditingID = null;
 
-    // 4. Render Input Kuis
+    // Render Kuis
     const soalContainer = document.getElementById('soal-container');
     for(let i=1; i<=5; i++){
         soalContainer.innerHTML += `
@@ -202,24 +173,18 @@
                     <input type="text" class="optD" data-id="${i}" placeholder="Pilihan D">
                 </div>
                 <label style="margin-top:10px;">Kunci Jawaban</label>
-                <select class="kunci" data-id="${i}">
-                    <option value="a">A</option><option value="b">B</option>
-                    <option value="c">C</option><option value="d">D</option>
-                </select>
+                <select class="kunci" data-id="${i}"><option value="a">A</option><option value="b">B</option><option value="c">C</option><option value="d">D</option></select>
             </div>`;
     }
 
-    // 5. Database Logic
+    // Database Logic
     async function hitungMateri() {
         onValue(ref(db, 'materi'), (snap) => {
             materiCount = snap.exists() ? Object.keys(snap.val()).length : 0;
             if(!currentEditingID) {
-                const label = document.getElementById('label-urut');
-                const boxDisplay = document.getElementById('display-materi-urut');
                 const textMateri = "materi" + (materiCount + 1);
-                
-                if(label) label.innerText = textMateri;
-                if(boxDisplay) boxDisplay.innerText = textMateri;
+                document.getElementById('label-urut').innerText = textMateri;
+                document.getElementById('display-materi-urut').innerText = textMateri;
             }
         });
     }
@@ -233,15 +198,13 @@
 
         let bankSoal = null;
         const cekSoal1 = document.querySelector(`.tanya[data-id="1"]`).value;
-        
         if(cekSoal1 !== ""){
             bankSoal = {};
             for(let i=1; i<=5; i++){
                 const q = document.querySelector(`.tanya[data-id="${i}"]`).value;
                 if(q !== ""){
                     bankSoal[`kuis_${materiID}_${i}`] = {
-                        tanya: q, 
-                        a: document.querySelector(`.optA[data-id="${i}"]`).value,
+                        tanya: q, a: document.querySelector(`.optA[data-id="${i}"]`).value,
                         b: document.querySelector(`.optB[data-id="${i}"]`).value,
                         c: document.querySelector(`.optC[data-id="${i}"]`).value,
                         d: document.querySelector(`.optD[data-id="${i}"]`).value,
@@ -259,14 +222,12 @@
                 bank_soal: bankSoal,
                 timestamp: Date.now()
             };
-
             if(!currentEditingID) {
                 dataMateri.id_urut = materiCount + 1;
             } else {
                 const oldData = await get(ref(db, `materi/${currentEditingID}`));
                 dataMateri.id_urut = oldData.val().id_urut;
             }
-
             await set(ref(db, 'materi/' + materiID), dataMateri);
             alert(currentEditingID ? "Materi Diperbarui!" : "Materi Terbit!");
             resetForm();
@@ -279,10 +240,10 @@
         quill.setContents([]);
         document.querySelectorAll('.tanya, .optA, .optB, .optC, .optD').forEach(el => el.value = "");
         document.querySelectorAll('.kunci').forEach(el => el.selectedIndex = 0);
-        
-        const nextMateri = "materi" + (materiCount + 1);
-        document.getElementById('btnSimpan').innerHTML = `Publikasikan <span class="hidden-text">Sebagai <span id="label-urut">${nextMateri}</span></span> <i class="fa-solid fa-paper-plane"></i>`;
-        document.getElementById('display-materi-urut').innerText = nextMateri;
+        const nextM = "materi" + (materiCount + 1);
+        document.getElementById('label-urut').innerText = nextM;
+        document.getElementById('display-materi-urut').innerText = nextM;
+        document.getElementById('btnSimpan').innerHTML = `Publikasikan <span id="label-urut" class="hidden-label">${nextM}</span> <i class="fa-solid fa-paper-plane"></i>`;
         document.getElementById('btnBatalEdit').style.display = "none";
     }
 
@@ -295,7 +256,7 @@
             listDiv.innerHTML += `
                 <div class="materi-card">
                     <div>
-                        <span class="badge-urut">MATERI ${data.id_urut || ''}</span>
+                        <span class="badge-urut" id="badge-${c.key}">${data.id_urut}</span>
                         <span>${data.judul}</span>
                     </div>
                     <div class="action-btns">
