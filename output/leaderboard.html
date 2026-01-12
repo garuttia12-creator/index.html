@@ -7,20 +7,44 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        /* ============ RESET & BASE ============ */
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-        body{background:linear-gradient(180deg,#1e2f8f,#0b1c4d); color:#fff; padding:20px; min-height:100vh;}
-        .container { max-width: 900px; margin: 0 auto; }
+        body{background:linear-gradient(180deg,#1e2f8f,#0b1c4d); color:#fff; min-height:100vh; overflow-x: hidden;}
         
-        /* Header & Nav */
-        .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        /* Navbar Dinamis (Sama dengan Dashboard) */
+        .navbar{ position:fixed; width:100%; top:0; background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); z-index:1000; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.2); }
+        .nav-container{ max-width:1200px; margin:auto; display:flex; justify-content:space-between; align-items:center; padding:0 20px; }
+        .brand{ display:flex; align-items:center; gap:10px; }
+        .logo{ width: clamp(35px, 10vw, 45px); }
+        .brand-text h1{ font-size: clamp(14px, 4vw, 18px); margin:0; }
+        .brand-text span{ font-size: clamp(10px, 3vw, 12px); opacity:0.8; }
+        
+        nav ul{ display:flex; list-style:none; gap:15px; align-items: center; }
+        nav a{ color:#fff; text-decoration:none; font-size: clamp(12px, 3vw, 14px); font-weight:500; transition: 0.3s; }
+        nav a:hover{ opacity: 0.8; }
+        .active { color: #ff6f61 !important; }
+
+        /* Style Khusus Tombol Admin */
+        .btn-admin {
+            background: #f8c471;
+            color: #0b1c4d !important;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 700 !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ============ KONTEN LEADERBOARD ============ */
+        .container { max-width: 900px; margin: 0 auto; padding: 110px 20px 40px; }
+        
         .header-section { text-align: center; margin-bottom: 30px; }
         .gradient-text { background: linear-gradient(90deg,#e93538,#ff6f61,#f8c471); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:700; font-size: clamp(24px, 5vw, 32px); }
 
-        /* Filter Section */
         .filter-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 20px; margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.1); }
         select { background: #1e2f8f; color: white; border: 2px solid #f8c471; padding: 12px 20px; border-radius: 12px; width: 100%; max-width: 400px; cursor: pointer; font-weight: 600; outline: none; }
 
-        /* Board Card */
         .board-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); padding: 25px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         h2 { color: #f8c471; margin-bottom: 20px; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid #ff6f61; padding-left: 15px; }
         
@@ -28,7 +52,7 @@
         th { text-align: left; padding: 15px; border-bottom: 2px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); font-size: 13px; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; }
         
-        /* Medal & Rank Colors */
+        /* Rank Styles */
         .rank { font-weight: 700; width: 60px; text-align: center; }
         .rank-1 { color: #ffd700; font-size: 20px; } 
         .rank-2 { color: #c0c0c0; font-size: 18px; } 
@@ -37,38 +61,36 @@
         .skor-badge { background: linear-gradient(90deg, #27ae60, #2ecc71); padding: 5px 12px; border-radius: 10px; font-weight: 700; color: white; }
         .durasi-info { color: #4cc9f0; font-size: 13px; font-weight: 500; }
 
-        /* Button Dashboard Custom */
-        .btn-dash { 
-            background: rgba(255,255,255,0.1); 
-            color: #fff; 
-            text-decoration: none; 
-            padding: 10px 20px; 
-            border-radius: 15px; 
-            font-size: 14px; 
-            font-weight: 500; 
-            border: 1px solid rgba(255,255,255,0.2); 
-            transition: 0.3s; 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-        }
-        .btn-dash:hover { background: #e93538; border-color: transparent; transform: scale(1.05); }
-
         @media (max-width: 600px) {
             td, th { padding: 10px 5px; font-size: 13px; }
-            .nav-header { flex-direction: column; gap: 15px; }
+            .container { padding-top: 100px; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="nav-header">
-        <h1 class="gradient-text">Leaderboard</h1>
-        <a href="../dashboard.html" class="btn-dash"><i class="fa-solid fa-house"></i> Dashboard</a>
+<header class="navbar">
+    <div class="nav-container">
+        <div class="brand">
+            <img src="../img/logo-smkn9.png" class="logo">
+            <div class="brand-text">
+                <h1>SMKN 9 Garut</h1>
+                <span>Media Pembelajaran TJKT</span>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../dashboard.html">Dashboard</a></li>
+                <li id="admin-link"></li> 
+                <li><a href="#" id="btnLogout">Logout</a></li>
+            </ul>
+        </nav>
     </div>
+</header>
 
+<div class="container">
     <div class="header-section">
+        <h1 class="gradient-text">Leaderboard</h1>
         <p style="opacity: 0.7;">Peringkat nilai terbaik dan waktu tercepat</p>
     </div>
 
@@ -115,23 +137,58 @@
 </div>
 
 <script type="module">
-    import { db } from "../js/firebase-config.js";
+    import { db, auth } from "../js/firebase-config.js";
     import { ref, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // 1. Handle Navigation & Auth
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            checkAdminRole(user.uid);
+        } else {
+            window.location.href = "../login.html";
+        }
+    });
+
+    // 2. Logout Logic
+    document.getElementById('btnLogout').addEventListener('click', (e) => {
+        e.preventDefault();
+        if(confirm("Apakah Anda yakin ingin keluar?")) {
+            signOut(auth).then(() => {
+                localStorage.clear();
+                window.location.href = "../login.html";
+            });
+        }
+    });
+
+    // 3. Check Admin for Navigation
+    async function checkAdminRole(uid) {
+        try {
+            const snap = await get(ref(db, `users/${uid}/biodata`));
+            if (snap.exists()) {
+                const data = snap.val();
+                if ((data.role || "").toLowerCase() === "admin") {
+                    document.getElementById("admin-link").innerHTML = `
+                        <a href="../admin/admin-cms.html" class="btn-admin">
+                            <i class="fa-solid fa-user-shield"></i> Admin
+                        </a>`;
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
 
     const selectMateri = document.getElementById('selectMateri');
     const siswaList = document.getElementById('siswa-list');
     const pengunjungList = document.getElementById('pengunjung-list');
 
-    // 1. Load Daftar Materi (Tampilan No Urut)
+    // 4. Load Daftar Materi
     onValue(ref(db, 'materi'), (snap) => {
         if(snap.exists()){
             let materiData = [];
             snap.forEach(child => {
                 materiData.push({ key: child.key, id_urut: child.val().id_urut || 0 });
             });
-            
             materiData.sort((a, b) => a.id_urut - b.id_urut);
-
             materiData.forEach(m => {
                 const opt = document.createElement('option');
                 opt.value = m.key;
@@ -141,7 +198,7 @@
         }
     });
 
-    // 2. Load Leaderboard data
+    // 5. Load Leaderboard data
     selectMateri.onchange = async () => {
         const idMateri = selectMateri.value;
         if(!idMateri) return;

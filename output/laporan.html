@@ -4,15 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Nilai Akhir | PJTJ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        /* ============ RESET & BASE ============ */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
         body {
-            margin: 0; font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
             background: linear-gradient(180deg, #1e2f8f, #0b1c4d);
-            color: #fff; min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
         }
-        .container { width: 100%; max-width: 900px; margin: auto; padding: 60px 15px; }
+
+        /* Navbar Dinamis (Sama dengan Dashboard) */
+        .navbar { position:fixed; width:100%; top:0; background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); z-index:1000; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.2); }
+        .nav-container { max-width:1200px; margin:auto; display:flex; justify-content:space-between; align-items:center; padding:0 20px; }
+        .brand { display:flex; align-items:center; gap:10px; }
+        .logo { width: clamp(35px, 10vw, 45px); }
+        .brand-text h1 { font-size: clamp(14px, 4vw, 18px); margin:0; }
+        .brand-text span { font-size: clamp(10px, 3vw, 12px); opacity:0.8; }
+        
+        nav ul { display:flex; list-style:none; gap:15px; align-items: center; }
+        nav a { color:#fff; text-decoration:none; font-size: clamp(12px, 3vw, 14px); font-weight:500; transition: 0.3s; }
+        nav a:hover { opacity: 0.8; }
+        .active { color: #ff6f61 !important; }
+
+        /* Style Khusus Tombol Admin */
+        .btn-admin {
+            background: #f8c471;
+            color: #0b1c4d !important;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 700 !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ============ KONTEN LAPORAN ============ */
+        .container { width: 100%; max-width: 900px; margin: auto; padding: 120px 15px 60px; }
         .card { 
             background: rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 25px; 
             border: 1px solid rgba(255, 255, 255, .15); backdrop-filter: blur(10px); 
@@ -20,8 +50,9 @@
         }
         .table-container { width: 100%; overflow-x: auto; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        thead th { padding: 15px; background: rgba(255, 255, 255, .1); text-align: center; color: #f8c471; }
-        td { padding: 15px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, .05); }
+        thead th { padding: 15px; background: rgba(255, 255, 255, .1); text-align: center; color: #f8c471; font-size: 14px; }
+        td { padding: 15px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, .05); font-size: 14px; }
+        
         .nilai-besar {
             font-size: 70px; font-weight: 800; margin: 10px 0;
             background: linear-gradient(90deg, #ff9a3c, #ff3d3d);
@@ -29,29 +60,47 @@
         }
         .blok-header { background: rgba(248, 196, 113, 0.1); font-weight: bold; color: #f8c471; text-align: left !important; }
         .sub-total { background: rgba(76, 201, 240, 0.1); font-weight: bold; color: #4cc9f0; }
-        .btn-nav {
-            background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px 20px; 
-            border-radius: 20px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px;
-            transition: 0.3s;
-        }
-        .btn-nav:hover { background: rgba(255,255,255,0.2); }
+
         #btnSertifikat {
             background: linear-gradient(90deg, #27ae60, #2ecc71); color: white; border: none;
             padding: 15px 30px; border-radius: 30px; font-weight: bold; cursor: pointer;
             margin-top: 20px; display: none; text-decoration: none;
-            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4); transition: 0.3s;
+        }
+        #btnSertifikat:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6); }
+
+        @media(max-width: 600px) {
+            .container { padding-top: 100px; }
+            .nilai-besar { font-size: 50px; }
         }
     </style>
 </head>
 <body>
 
+<header class="navbar">
+    <div class="nav-container">
+        <div class="brand">
+            <img src="../img/logo-smkn9.png" class="logo">
+            <div class="brand-text">
+                <h1>SMKN 9 Garut</h1>
+                <span>Media Pembelajaran TJKT</span>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../dashboard.html">Dashboard</a></li>
+                <li id="admin-link"></li> 
+                <li><a href="#" id="btnLogout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
 <div class="container">
-    <a href="../dashboard.html" class="btn-nav"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</a>
-    
     <div class="card">
         <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="margin:0;">📘 Laporan Hasil Belajar</h1>
-            <p style="opacity: 0.7;">Akumulasi nilai akhir materi </p>
+            <h1 style="margin:0; font-size: 24px;">📘 Laporan Hasil Belajar</h1>
+            <p style="opacity: 0.7; font-size: 14px;">Akumulasi nilai akhir materi </p>
             <div id="nilaiAkhir" class="nilai-besar">0</div>
             <p id="statusTeks" style="font-size: 18px; font-weight: 500;"></p>
             <a href="sertifikat.html" id="btnSertifikat">🎓 DOWNLOAD SERTIFIKAT</a>
@@ -75,43 +124,61 @@
 </div>
 
 <script type="module">
-    // MENGGUNAKAN IMPORT YANG SAMA DENGAN LEADERBOARD
-    import { db } from "../js/firebase-config.js";
+    import { db, auth } from "../js/firebase-config.js";
     import { ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    const auth = getAuth();
-
-    // Jalankan pengecekan auth
+    // Handle Auth & Header Logic
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            console.log("Login sebagai:", user.uid);
+            loadHeaderData(user.uid);
             ambilDataSiswa(user.uid);
         } else {
-            console.warn("User tidak terdeteksi, dialihkan ke login.");
-            window.location.href = "login.html";
+            window.location.href = "../login.html";
         }
     });
 
+    // Logout Logic
+    document.getElementById('btnLogout').addEventListener('click', (e) => {
+        e.preventDefault();
+        if(confirm("Apakah Anda yakin ingin keluar?")) {
+            signOut(auth).then(() => {
+                localStorage.clear();
+                window.location.href = "../login.html";
+            });
+        }
+    });
+
+    async function loadHeaderData(uid) {
+        try {
+            const snap = await get(ref(db, `users/${uid}/biodata`));
+            if (snap.exists()) {
+                const data = snap.val();
+                if ((data.role || "").toLowerCase() === "admin") {
+                    document.getElementById("admin-link").innerHTML = `
+                        <a href="../admin/admin-cms.html" class="btn-admin">
+                            <i class="fa-solid fa-user-shield"></i> Admin
+                        </a>`;
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
+
     async function ambilDataSiswa(uid) {
         try {
-            // Ambil Master Materi dan Progres spesifik User tersebut
             const [materiSnap, userSnap] = await Promise.all([
                 get(ref(db, 'materi')),
                 get(ref(db, `users/${uid}/progres`))
             ]);
 
             const tbody = document.getElementById('tabelBody');
-
             if (!materiSnap.exists()) {
-                tbody.innerHTML = "<tr><td colspan='3'>Belum ada daftar materi di database.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='3'>Belum ada daftar materi.</td></tr>";
                 return;
             }
 
             const materiData = materiSnap.val();
             const progresData = userSnap.val() || {};
-
-            // Mengurutkan materi berdasarkan id_urut
             const listMateri = Object.keys(materiData).map(key => ({
                 id_db: key,
                 ...materiData[key]
@@ -121,12 +188,10 @@
             let totalSkorKumulatif = 0;
             let blokSelesaiCount = 0;
 
-            // Logika Loop per Blok (4 materi per blok)
             for (let i = 0; i < listMateri.length; i += 4) {
                 const group = listMateri.slice(i, i + 4);
                 const nomorBlok = Math.floor(i / 4) + 1;
 
-                // Header Blok
                 const hRow = document.createElement('tr');
                 hRow.className = 'blok-header';
                 hRow.innerHTML = `<td colspan="3"><i class="fa-solid fa-layer-group"></i> MERANCANG TOPOLOGI JARINGAN ${nomorBlok}</td>`;
@@ -136,10 +201,8 @@
                 let materiTuntas = 0;
 
                 group.forEach(m => {
-                    // Ambil skor dari folder progres sesuai ID materi
                     const p = progresData[m.id_db];
                     const skor = (p && p.skor !== undefined) ? parseInt(p.skor) : null;
-
                     if (skor !== null) {
                         skorBlok += skor;
                         materiTuntas++;
@@ -151,12 +214,10 @@
                         <td style="text-align: left;">${m.judul}</td>
                         <td style="font-weight:bold; color:${skor >= 70 ? '#2ecc71' : '#ff6f61'}">
                             ${skor !== null ? skor : '<span style="opacity:0.3">Belum Ada</span>'}
-                        </td>
-                    `;
+                        </td>`;
                     tbody.appendChild(row);
                 });
 
-                // Baris Rata-Rata per Blok
                 const fRow = document.createElement('tr');
                 fRow.className = 'sub-total';
                 if (materiTuntas === group.length && group.length > 0) {
@@ -170,7 +231,6 @@
                 tbody.appendChild(fRow);
             }
 
-            // Hitung Nilai Final (Rata-rata dari nilai semua blok yang sudah selesai)
             const nilaiFinal = blokSelesaiCount > 0 ? Math.round(totalSkorKumulatif / blokSelesaiCount) : 0;
             document.getElementById('nilaiAkhir').innerText = nilaiFinal;
 
@@ -188,14 +248,11 @@
             }
 
         } catch (error) {
-            console.error("Error Detail:", error);
-            document.getElementById('tabelBody').innerHTML = `<tr><td colspan="3" style="color:red">Terjadi kesalahan: ${error.message}</td></tr>`;
+            console.error(error);
+            document.getElementById('tabelBody').innerHTML = `<tr><td colspan="3" style="color:red">Terjadi kesalahan memuat data.</td></tr>`;
         }
     }
 </script>
 
 </body>
-
 </html>
-
-
