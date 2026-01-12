@@ -3,206 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Nilai Akhir Topologi Jaringan</title>
+    <title>Laporan Nilai Akhir | PJTJ</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        /* ===== STYLE TETAP SAMA ===== */
         body {
             margin: 0; font-family: 'Poppins', sans-serif;
-            background: linear-gradient(180deg, #1f2e7a, #1a2560);
-            color: #fff; min-height: 100vh; overflow-x: hidden;
+            background: linear-gradient(180deg, #1e2f8f, #0b1c4d);
+            color: #fff; min-height: 100vh;
         }
-        .container { width: 100%; max-width: 900px; margin: auto; padding: 100px 15px 50px; }
+        .container { width: 100%; max-width: 900px; margin: auto; padding: 60px 15px; }
         .card { 
-            background: rgba(255, 255, 255, 0.12); border-radius: 22px; padding: 25px; 
+            background: rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 25px; 
             border: 1px solid rgba(255, 255, 255, .15); backdrop-filter: blur(10px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
         .table-container { width: 100%; overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        thead th { padding: 12px; background: rgba(255, 255, 255, .15); text-align: center; }
-        td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        thead th { padding: 15px; background: rgba(255, 255, 255, .1); text-align: center; color: #f8c471; }
+        td { padding: 15px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, .05); }
         .nilai-besar {
-            font-size: clamp(40px, 10vw, 64px); font-weight: 800; margin: 10px 0;
+            font-size: 70px; font-weight: 800; margin: 10px 0;
             background: linear-gradient(90deg, #ff9a3c, #ff3d3d);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        button {
-            width: 100%; max-width: 350px; padding: 15px 25px; border: none; border-radius: 30px;
-            background: linear-gradient(90deg, #e93538, #ff6f61); color: #fff;
-            font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;
+        .blok-header { background: rgba(248, 196, 113, 0.1); font-weight: bold; color: #f8c471; text-align: left !important; }
+        .sub-total { background: rgba(76, 201, 240, 0.1); font-weight: bold; color: #4cc9f0; }
+        .btn-nav {
+            background: rgba(255,255,255,0.1); color: white; border: none; padding: 10px 20px; 
+            border-radius: 20px; cursor: pointer; text-decoration: none; display: inline-block; margin-bottom: 20px;
+            transition: 0.3s;
         }
-        .judul-gradasi span {
-            background: linear-gradient(90deg, #ff9a3c, #ff3d3d);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        .btn-nav:hover { background: rgba(255,255,255,0.2); }
+        #btnSertifikat {
+            background: linear-gradient(90deg, #27ae60, #2ecc71); color: white; border: none;
+            padding: 15px 30px; border-radius: 30px; font-weight: bold; cursor: pointer;
+            margin-top: 20px; display: none; text-decoration: none;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
         }
-        .blok-header { background: rgba(248, 196, 113, 0.2); font-weight: bold; color: #f8c471; }
-        .sub-total { background: rgba(46, 204, 113, 0.1); font-weight: bold; color: #2ecc71; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="page-header" style="text-align: center; margin-bottom: 30px;">
-        <button onclick="location.href='../dashboard.html'" style="background: rgba(255,255,255,0.1); margin-bottom: 20px; font-size: 14px; width: auto; padding: 10px 20px;">⬅ Kembali ke Dashboard</button>
-        <h1>📘 Laporan Nilai Akhir</h1>
-        <div class="subtitle">Evaluasi Berdasarkan Kelompok Materi</div>
-    </div>
-
+    <a href="dashboard.html" class="btn-nav"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard</a>
+    
     <div class="card">
-        <div class="hasil-utama" style="text-align: center;">
-            <p>Rata-rata Seluruh Materi:</p>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="margin:0;">📘 Laporan Hasil Belajar</h1>
+            <p style="opacity: 0.7;">Akumulasi nilai per unit materi</p>
             <div id="nilaiAkhir" class="nilai-besar">0</div>
-            <p id="statusKelulusan" style="font-weight: 600; font-size: 18px;">Status: Memeriksa...</p>
-            
-            <div id="wrapperSertifikat" style="margin-top: 25px;">
-                <button id="btnUnduhSertifikat" style="display:none; background: linear-gradient(90deg, #27ae60, #2ecc71);" onclick="location.href='../sertifikat-topologi.html'">
-                    🎓 Unduh Sertifikat Anda
-                </button>
-            </div>
+            <p id="statusTeks" style="font-size: 18px; font-weight: 500;"></p>
+            <a href="sertifikat.html" id="btnSertifikat">🎓 DOWNLOAD SERTIFIKAT</a>
         </div>
-
-        <h3 class="judul-gradasi" style="margin-top:40px;">
-            📊 <span>Rincian Nilai Per Blok</span>
-        </h3>
 
         <div class="table-container">
-            <table id="tabelLaporan">
+            <table>
                 <thead>
                     <tr>
-                        <th>Indeks</th>
-                        <th>Komponen Materi</th>
-                        <th>Nilai</th>
+                        <th style="width: 50px;">ID</th>
+                        <th style="text-align: left;">Judul Materi</th>
+                        <th>Skor Anda</th>
                     </tr>
                 </thead>
-                <tbody id="bodyLaporan">
-                    <tr><td colspan="3">Memuat data nilai...</td></tr>
+                <tbody id="tabelBody">
+                    <tr><td colspan="3" style="padding: 50px;">Sedang memvalidasi data siswa...</td></tr>
                 </tbody>
             </table>
-        </div>
-
-        <div id="penjelasanRumus" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-top: 20px; font-size: 13px;">
-            * Nilai Akumulasi (Induk) hanya dihitung jika 4 materi dalam satu blok telah diselesaikan.
         </div>
     </div>
 </div>
 
 <script type="module">
-// Menggunakan konfigurasi yang sama dengan dashboard Anda
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    // MENGGUNAKAN IMPORT YANG SAMA DENGAN LEADERBOARD
+    import { db } from "../js/firebase-config.js";
+    import { ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const firebaseConfig = {
-    databaseURL: "https://mediabelajarppj-default-rtdb.asia-southeast1.firebasedatabase.app"
-};
+    const auth = getAuth();
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
-
-// Proteksi Halaman: Cek status login menggunakan Firebase Auth (bukan LocalStorage)
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        renderLaporan(user.uid);
-    } else {
-        // Jika tidak login, arahkan keluar folder ke login.html
-        window.location.href = "../login.html";
-    }
-});
-
-async function renderLaporan(userUID) {
-    try {
-        const [materiSnap, userSnap] = await Promise.all([
-            get(ref(db, 'materi')),
-            get(ref(db, `users/${userUID}`))
-        ]);
-
-        if (!materiSnap.exists()) {
-            document.getElementById("bodyLaporan").innerHTML = "<tr><td colspan='3'>Materi belum tersedia</td></tr>";
-            return;
-        }
-        
-        const allMateri = materiSnap.val();
-        const userProgres = userSnap.exists() ? (userSnap.val().progres || {}) : {};
-        
-        const materiList = Object.keys(allMateri).map(key => ({
-            id: key,
-            ...allMateri[key]
-        })).sort((a, b) => a.id_urut - b.id_urut);
-
-        const bodyLaporan = document.getElementById("bodyLaporan");
-        bodyLaporan.innerHTML = "";
-
-        let totalSkorSemua = 0;
-        let countMateriSelesai = 0;
-        
-        const jumlahBlok = Math.ceil(materiList.length / 4);
-
-        for (let i = 0; i < jumlahBlok; i++) {
-            let blokMateri = materiList.slice(i * 4, (i * 4) + 4);
-            let skorBlok = 0;
-            let materiTerisiDiBlok = 0;
-
-            const rowHeader = document.createElement("tr");
-            rowHeader.className = "blok-header";
-            rowHeader.innerHTML = `<td colspan="3">UNIT UTAMA ${i + 1}</td>`;
-            bodyLaporan.appendChild(rowHeader);
-
-            blokMateri.forEach(m => {
-                const skor = userProgres[m.id] ? userProgres[m.id].skor : null;
-                if (skor !== null) {
-                    skorBlok += skor;
-                    materiTerisiDiBlok++;
-                    totalSkorSemua += skor;
-                    countMateriSelesai++;
-                }
-
-                const rowMateri = document.createElement("tr");
-                rowMateri.innerHTML = `
-                    <td>${m.id_urut}</td>
-                    <td style="text-align:left !important;">${m.judul.substring(0, 45)}...</td>
-                    <td>${skor !== null ? skor : '<span style="opacity:0.3">—</span>'}</td>
-                `;
-                bodyLaporan.appendChild(rowMateri);
-            });
-
-            const rowTotal = document.createElement("tr");
-            rowTotal.className = "sub-total";
-            
-            if (materiTerisiDiBlok === 4) {
-                const rataBlok = skorBlok / 4;
-                rowTotal.innerHTML = `
-                    <td colspan="2">NILAI INDUK UNIT ${i + 1} (LENGKAP)</td>
-                    <td>${rataBlok.toFixed(0)}</td>
-                `;
-            } else {
-                rowTotal.innerHTML = `
-                    <td colspan="2" style="font-size:11px; opacity:0.6">NILAI INDUK UNIT ${i + 1} (BELUM LENGKAP)</td>
-                    <td style="font-size:11px; opacity:0.6">${materiTerisiDiBlok}/4</td>
-                `;
-            }
-            bodyLaporan.appendChild(rowTotal);
-        }
-
-        const nilaiFinal = countMateriSelesai > 0 ? Math.round(totalSkorSemua / countMateriSelesai) : 0;
-        document.getElementById("nilaiAkhir").innerText = nilaiFinal;
-        
-        const statusEl = document.getElementById("statusKelulusan");
-        const btnSertifikat = document.getElementById("btnUnduhSertifikat");
-
-        if(nilaiFinal >= 70 && countMateriSelesai >= 4) {
-            statusEl.innerHTML = "🎉 <b style='color:#2ecc71'>ANDA DINYATAKAN LULUS</b>";
-            btnSertifikat.style.display = "inline-block";
+    // Jalankan pengecekan auth
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log("Login sebagai:", user.uid);
+            ambilDataSiswa(user.uid);
         } else {
-            statusEl.innerHTML = "<b style='color:#f8c471'>Selesaikan minimal 1 Unit (4 Materi) untuk Lulus</b>";
-            btnSertifikat.style.display = "none";
+            console.warn("User tidak terdeteksi, dialihkan ke login.");
+            window.location.href = "login.html";
         }
+    });
 
-    } catch (error) {
-        console.error("Firebase Error:", error);
-        document.getElementById("bodyLaporan").innerHTML = "<tr><td colspan='3'>Gagal memuat data</td></tr>";
+    async function ambilDataSiswa(uid) {
+        try {
+            // Ambil Master Materi dan Progres spesifik User tersebut
+            const [materiSnap, userSnap] = await Promise.all([
+                get(ref(db, 'materi')),
+                get(ref(db, `users/${uid}/progres`))
+            ]);
+
+            const tbody = document.getElementById('tabelBody');
+
+            if (!materiSnap.exists()) {
+                tbody.innerHTML = "<tr><td colspan='3'>Belum ada daftar materi di database.</td></tr>";
+                return;
+            }
+
+            const materiData = materiSnap.val();
+            const progresData = userSnap.val() || {};
+
+            // Mengurutkan materi berdasarkan id_urut
+            const listMateri = Object.keys(materiData).map(key => ({
+                id_db: key,
+                ...materiData[key]
+            })).sort((a, b) => (a.id_urut || 0) - (b.id_urut || 0));
+
+            tbody.innerHTML = "";
+            let totalSkorKumulatif = 0;
+            let blokSelesaiCount = 0;
+
+            // Logika Loop per Blok (4 materi per blok)
+            for (let i = 0; i < listMateri.length; i += 4) {
+                const group = listMateri.slice(i, i + 4);
+                const nomorBlok = Math.floor(i / 4) + 1;
+
+                // Header Blok
+                const hRow = document.createElement('tr');
+                hRow.className = 'blok-header';
+                hRow.innerHTML = `<td colspan="3"><i class="fa-solid fa-layer-group"></i> UNIT BLOK ${nomorBlok}</td>`;
+                tbody.appendChild(hRow);
+
+                let skorBlok = 0;
+                let materiTuntas = 0;
+
+                group.forEach(m => {
+                    // Ambil skor dari folder progres sesuai ID materi
+                    const p = progresData[m.id_db];
+                    const skor = (p && p.skor !== undefined) ? parseInt(p.skor) : null;
+
+                    if (skor !== null) {
+                        skorBlok += skor;
+                        materiTuntas++;
+                    }
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${m.id_urut || '-'}</td>
+                        <td style="text-align: left;">${m.judul}</td>
+                        <td style="font-weight:bold; color:${skor >= 70 ? '#2ecc71' : '#ff6f61'}">
+                            ${skor !== null ? skor : '<span style="opacity:0.3">Belum Ada</span>'}
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Baris Rata-Rata per Blok
+                const fRow = document.createElement('tr');
+                fRow.className = 'sub-total';
+                if (materiTuntas === group.length && group.length > 0) {
+                    const rataRata = Math.round(skorBlok / group.length);
+                    fRow.innerHTML = `<td colspan="2">RATA-RATA UNIT ${nomorBlok}</td><td>${rataRata}</td>`;
+                    totalSkorKumulatif += rataRata;
+                    blokSelesaiCount++;
+                } else {
+                    fRow.innerHTML = `<td colspan="2">RATA-RATA UNIT ${nomorBlok}</td><td style="font-size:11px; color:#f8c471">Belum Lengkap (${materiTuntas}/${group.length})</td>`;
+                }
+                tbody.appendChild(fRow);
+            }
+
+            // Hitung Nilai Final (Rata-rata dari nilai semua blok yang sudah selesai)
+            const nilaiFinal = blokSelesaiCount > 0 ? Math.round(totalSkorKumulatif / blokSelesaiCount) : 0;
+            document.getElementById('nilaiAkhir').innerText = nilaiFinal;
+
+            const statusTeks = document.getElementById('statusTeks');
+            const btnSertif = document.getElementById('btnSertifikat');
+
+            if (blokSelesaiCount >= 1 && nilaiFinal >= 70) {
+                statusTeks.innerHTML = "✅ Kompeten - Selamat Anda Lulus!";
+                statusTeks.style.color = "#2ecc71";
+                btnSertif.style.display = "inline-block";
+            } else {
+                statusTeks.innerHTML = "❌ Belum Memenuhi Syarat Kelulusan (Minimal 1 Blok Tuntas & Rata-rata 70)";
+                statusTeks.style.color = "#f8c471";
+                btnSertif.style.display = "none";
+            }
+
+        } catch (error) {
+            console.error("Error Detail:", error);
+            document.getElementById('tabelBody').innerHTML = `<tr><td colspan="3" style="color:red">Terjadi kesalahan: ${error.message}</td></tr>`;
+        }
     }
-}
 </script>
+
 </body>
 </html>
