@@ -124,14 +124,20 @@
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { ref, set, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // 1. Auth Guard (Khusus Admin)
+    // 1. Auth Guard (Admin & Guru Memiliki Otoritas yang Sama)
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const bioSnap = await get(ref(db, `users/${user.uid}/biodata`));
-            if (bioSnap.exists() && bioSnap.val().role === "admin") {
-                document.body.style.display = "block";
-                hitungMateri();
-            } else { 
+            if (bioSnap.exists()) {
+                const userRole = (bioSnap.val().role || "").toLowerCase();
+                // Mengizinkan admin ATAU guru
+                if (userRole === "admin" || userRole === "guru") {
+                    document.body.style.display = "block";
+                    hitungMateri();
+                } else { 
+                    window.location.href = "../dashboard.html";
+                }
+            } else {
                 window.location.href = "../dashboard.html";
             }
         } else { 
@@ -307,5 +313,4 @@
     document.getElementById('btnBatalEdit').onclick = resetForm;
 </script>
 </body>
-
 </html>
