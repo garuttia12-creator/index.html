@@ -11,7 +11,7 @@
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
         body{background:linear-gradient(180deg,#1e2f8f,#0b1c4d); color:#fff; min-height:100vh; overflow-x: hidden;}
         
-        /* Navbar Dinamis (Sama dengan Dashboard) */
+        /* Navbar Dinamis */
         .navbar{ position:fixed; width:100%; top:0; background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); z-index:1000; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.2); }
         .nav-container{ max-width:1200px; margin:auto; display:flex; justify-content:space-between; align-items:center; padding:0 20px; }
         .brand{ display:flex; align-items:center; gap:10px; }
@@ -117,23 +117,6 @@
             </tbody>
         </table>
     </div>
-
-    <div class="board-card">
-        <h2><i class="fa-solid fa-users"></i> Pengunjung Umum</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th style="text-align: center;">Pos</th>
-                    <th>Nama</th>
-                    <th>Skor</th>
-                    <th>Waktu</th>
-                </tr>
-            </thead>
-            <tbody id="pengunjung-list">
-                <tr><td colspan="4" style="text-align:center; opacity:0.5; padding: 40px;">Pilih nomor materi di atas</td></tr>
-            </tbody>
-        </table>
-    </div>
 </div>
 
 <script type="module">
@@ -179,7 +162,6 @@
 
     const selectMateri = document.getElementById('selectMateri');
     const siswaList = document.getElementById('siswa-list');
-    const pengunjungList = document.getElementById('pengunjung-list');
 
     // 4. Load Daftar Materi
     onValue(ref(db, 'materi'), (snap) => {
@@ -204,7 +186,6 @@
         if(!idMateri) return;
 
         siswaList.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Mencari data...</td></tr>";
-        pengunjungList.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Mencari data...</td></tr>";
 
         try {
             const [hasilSnap, usersSnap] = await Promise.all([
@@ -215,13 +196,11 @@
             if(!hasilSnap.exists()){
                 const emptyMsg = "<tr><td colspan='4' style='text-align:center; opacity:0.5; padding: 20px;'>Belum ada yang mengerjakan materi ini.</td></tr>";
                 siswaList.innerHTML = emptyMsg;
-                pengunjungList.innerHTML = emptyMsg;
                 return;
             }
 
             const allUsers = usersSnap.val() || {};
             let siswaArr = [];
-            let pengunjungArr = [];
 
             hasilSnap.forEach(child => {
                 const uid = child.key;
@@ -234,14 +213,13 @@
                     durasi: data.durasi
                 };
 
+                // Hanya masukkan ke array jika rolenya adalah siswa
                 if(role === 'siswa') siswaArr.push(record);
-                else if(role === 'pengunjung') pengunjungArr.push(record);
             });
 
             const sortRank = (a, b) => (b.skor !== a.skor) ? (b.skor - a.skor) : (a.durasi - b.durasi);
 
             renderTable(siswaArr.sort(sortRank), siswaList);
-            renderTable(pengunjungArr.sort(sortRank), pengunjungList);
 
         } catch (error) {
             console.error(error);
@@ -251,7 +229,7 @@
 
     function renderTable(dataArr, element) {
         if(dataArr.length === 0) {
-            element.innerHTML = "<tr><td colspan='4' style='text-align:center; opacity:0.5; padding: 20px;'>Data tidak ditemukan.</td></tr>";
+            element.innerHTML = "<tr><td colspan='4' style='text-align:center; opacity:0.5; padding: 20px;'>Data siswa tidak ditemukan.</td></tr>";
             return;
         }
 
@@ -281,5 +259,4 @@
     }
 </script>
 </body>
-
 </html>
