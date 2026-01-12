@@ -72,10 +72,9 @@
             *Wajib: Min. 8 Karakter, Huruf Besar, Angka, & Simbol (@$!%*?&).
         </div>
 
-        <div class="input-group">
+        <div class="input-group" style="display: none;">
             <select id="role" required>
-                <option value="">Pilih Peran Akun</option>
-                <option value="siswa">Siswa</option>
+                <option value="siswa" selected>Siswa</option>
                 <option value="guru">Guru</option>
                 <option value="pengunjung">Pengunjung</option>
             </select>
@@ -105,7 +104,17 @@
     const eyeIcon = document.getElementById('eyeIcon');
     const passHint = document.getElementById('passHint');
 
-    // 1. Fitur Intip Password (Ikon Mata) - RE-FIXED
+    // Tampilkan field siswa secara default saat halaman dibuka
+    function setupInitialRole() {
+        extraFields.innerHTML = `
+            <div class="input-group"><input type="text" id="nisn" placeholder="NISN (10 Digit)" required></div>
+            <div class="input-group"><input type="text" id="sekolah" placeholder="Nama Sekolah" required></div>
+            <div class="input-group"><input type="text" id="kelas" placeholder="Kelas" required></div>
+        `;
+    }
+    setupInitialRole();
+
+    // 1. Fitur Intip Password
     if (eyeIcon) {
         eyeIcon.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -128,24 +137,6 @@
         }
     });
 
-    // 3. Form Dinamis Siswa/Guru
-    roleSelect.addEventListener('change', () => {
-        const role = roleSelect.value;
-        extraFields.innerHTML = '';
-        if (role === 'siswa') {
-            extraFields.innerHTML = `
-                <div class="input-group"><input type="text" id="nisn" placeholder="NISN (10 Digit)" required></div>
-                <div class="input-group"><input type="text" id="sekolah" placeholder="Nama Sekolah" required></div>
-                <div class="input-group"><input type="text" id="kelas" placeholder="Kelas" required></div>
-            `;
-        } else if (role === 'guru') {
-            extraFields.innerHTML = `
-                <div class="input-group"><input type="text" id="nip" placeholder="NIP/NIDN" required></div>
-                <div class="input-group"><input type="text" id="instansi" placeholder="Unit Kerja / Instansi" required></div>
-            `;
-        }
-    });
-
     // 4. Proses Pendaftaran ke Firebase
     document.getElementById('regForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -155,7 +146,6 @@
         const pass = passwordInput.value;
         const role = roleSelect.value;
 
-        // Validasi Password Final
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         if (!regex.test(pass)) {
             alert("Password belum memenuhi syarat keamanan!");
@@ -166,11 +156,9 @@
         btn.innerText = "Mendaftarkan...";
 
         try {
-            // A. Buat User di Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
             const user = userCredential.user;
 
-            // B. Transaksi Nomor Urut (Agar tidak duplikat)
             const statsRef = ref(db, 'system/stats/totalUsers');
             let noUrutFinal = 0;
             await runTransaction(statsRef, (currentValue) => {
@@ -178,7 +166,6 @@
                 return noUrutFinal;
             });
 
-            // C. Siapkan Data Biodata
             let biodata = {
                 no_urut: noUrutFinal,
                 nama: document.getElementById('namaLengkap').value,
@@ -187,19 +174,14 @@
                 created_at: new Date().toISOString()
             };
 
+            // Karena role dikunci di 'siswa', bagian ini akan selalu aktif
             if (role === 'siswa') {
                 biodata.nisn = document.getElementById('nisn').value;
                 biodata.sekolah = document.getElementById('sekolah').value;
                 biodata.kelas = document.getElementById('kelas').value;
-            } else if (role === 'guru') {
-                biodata.nip = document.getElementById('nip').value;
-                biodata.instansi = document.getElementById('instansi').value;
             }
 
-            // D. Simpan ke Database (Path: users/UID/biodata)
             await set(ref(db, 'users/' + user.uid + '/biodata'), biodata);
-            
-            // E. Verifikasi Email & Logout Otomatis (Supaya mereka login manual nanti)
             await sendEmailVerification(user);
             alert("Pendaftaran Berhasil! Silakan cek email kamu untuk verifikasi sebelum login.");
             
